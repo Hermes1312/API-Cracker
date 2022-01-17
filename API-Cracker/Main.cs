@@ -72,14 +72,18 @@ namespace API_Cracker
 
             if (!IsPath(unameTB.Text) && IsPath(passTB.Text))
             {
-                _usernameCounter = 1;
-                using var reader = new StreamReader(passTB.Text);
-                string line;
-                while ((line = reader.ReadLine()) != null && _hits < 1)
+                new Thread(() => 
                 {
-                    ThreadPool.QueueUserWorkItem(TryCredentials, $"{unameTB.Text}\n{line}");
-                    Thread.Sleep(100);
-                }
+                    _usernameCounter = 1;
+                    using var reader = new StreamReader(passTB.Text);
+                    string line;
+                    while ((line = reader.ReadLine()) != null && _hits < 1)
+                    {
+                        TryCredentials($"{unameTB.Text}\n{line}");
+                        //ThreadPool.QueueUserWorkItem(TryCredentials, $"{unameTB.Text}\n{line}");
+                        Thread.Sleep(100);
+                    }
+                }).Start();
             }
         }
 
